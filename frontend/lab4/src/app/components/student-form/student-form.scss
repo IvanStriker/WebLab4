@@ -1,0 +1,29 @@
+fieldset {
+  display: flex;
+  gap: 32px;
+  border: none;
+}
+
+.column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.hint {
+  color: var(--color-muted);
+  text-align: right;
+}
+
+@media (max-width: 700px) {
+  fieldset {
+    flex-direction: column;
+  }
+}

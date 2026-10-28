@@ -1,0 +1,109 @@
+<h1>Список студентов</h1>
+
+<div class="toolbar">
+  <input
+    type="search"
+    class="search"
+    [formControl]="searchControl"
+    placeholder="Поиск по ФИО или группе..."
+    aria-label="Поиск"
+  />
+  <button type="button" class="btn" (click)="showFilters.set(!showFilters())">
+    {{ showFilters() ? 'Скрыть фильтры' : 'Фильтры' }}
+    @if (filterCount() > 0) {
+      <span class="count">{{ filterCount() }}</span>
+    }
+  </button>
+  <button type="button" class="btn btn-del" (click)="showExtra.set(!showExtra())">
+    {{ showExtra() ? 'Скрыть подробности' : 'Подробная информация' }}
+  </button>
+  @if (store.isAdmin()) {
+    <a routerLink="/students/new" class="btn btn-save">Добавить студента</a>
+  }
+  <label class="size">
+    На странице
+    <select (change)="changeSize($any($event.target).value)">
+      @for (size of pageSizes; track size) {
+        <option [value]="size" [selected]="size === query().size">{{ size }}</option>
+      }
+    </select>
+  </label>
+</div>
+
+@if (showFilters()) {
+  <app-filter-panel [filters]="query().filters" (apply)="applyFilters($event)" />
+}
+
+@if (state().error; as error) {
+  <div class="panel error-box">
+    <p>{{ error.message }}</p>
+    @for (detail of error.details | keyvalue; track detail.key) {
+      <p class="muted">{{ detail.key }}: {{ detail.value }}</p>
+    }
+    <div class="actions">
+      <button type="button" class="btn" (click)="reload()">Повторить</button>
+      @if (error.status === 400) {
+        <button type="button" class="btn btn-del" (click)="resetAll()">Сбросить параметры</button>
+      }
+    </div>
+  </div>
+}
+
+@if (state().data; as page) {
+  <p class="summary">Найдено: {{ page.totalItems }}</p>
+  <div class="table-wrap" [class.loading]="state().loading">
+    <table>
+      <thead>
+        <tr>
+          @for (field of fields(); track field.key) {
+            <th (click)="sortBy(field.key)" class="sortable" title="Сортировать">
+              {{ field.title }} <span class="mark">{{ sortMark(field.key) }}</span>
+            </th>
+          }
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (student of page.items; track student.id) {
+          <tr>
+            @for (field of fields(); track field.key) {
+              <td>{{ value(student, field.key) }}</td>
+            }
+            <td>
+              <div class="row-actions">
+                <a [routerLink]="['/students', student.id]" class="btn info" title="Подробнее">i</a>
+                @if (store.isAdmin()) {
+                  <a [routerLink]="['/students', student.id, 'edit']" class="btn btn-edit">Редактировать</a>
+                  <button
+                    type="button"
+                    class="btn btn-del"
+                    [class.confirm]="confirmId() === student.id"
+                    [disabled]="deleteAction.busy()"
+                    (click)="remove(student)"
+                    (blur)="confirmId.set(null)"
+                  >
+                    {{ confirmId() === student.id ? 'Точно удалить?' : 'Удалить' }}
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td [attr.colspan]="fields().length + 1" class="empty">Студенты не найдены</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-pagination
+    [page]="page.page"
+    [totalPages]="page.totalPages"
+    [disabled]="state().loading"
+    (pageChange)="changePage($event)"
+  />
+}
+
+@if (state().loading) {
+  <app-loader />
+}

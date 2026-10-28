@@ -1,0 +1,78 @@
+@use "sass:math";
+@use "sass:string";
+
+$field-height: 2000px;
+
+// Каждая звезда = яркое ядро + золотой ореол в той же точке
+@function star-field($count, $core, $glow, $glow-blur, $glow-spread) {
+  $value: "";
+  @for $i from 1 through $count {
+    $x: math.random(2560);
+    $y: math.random(2000);
+    $star: "#{$x}px #{$y}px 0 0 #{$core}, #{$x}px #{$y}px #{$glow-blur} #{$glow-spread} #{$glow}";
+    @if $i == 1 {
+      $value: $star;
+    } @else {
+      $value: "#{$value}, #{$star}";
+    }
+  }
+  @return string.unquote($value);
+}
+
+@mixin star-layer($size, $count, $core, $glow, $glow-blur, $glow-spread, $speed, $twinkle) {
+  $shadows: star-field($count, $core, $glow, $glow-blur, $glow-spread);
+
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  box-shadow: $shadows;
+  animation:
+    drift $speed linear infinite,
+    twinkle $twinkle ease-in-out infinite;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: $field-height;
+    left: 0;
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    box-shadow: $shadows;
+  }
+}
+
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;   // звёзды не мешают кликам
+}
+
+.layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+//                     размер  кол-во  ядро      ореол                       размытие  расширение  скорость  мерцание
+.small  { @include star-layer(1px, 500, #fff8e1, rgba(255, 210, 120, 0.5), 2px, 0,   150s, 4s); }
+.medium { @include star-layer(2px, 150, #fff3c4, rgba(255, 190, 70, 0.6),  4px, 1px, 100s, 6s); }
+.large  { @include star-layer(2px, 50,  #ffffff, rgba(255, 175, 40, 0.8),  8px, 2px, 60s,  3s); }
+
+
+@keyframes drift {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-$field-height); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+// Уважаем системную настройку «уменьшить движение»
+@media (prefers-reduced-motion: reduce) {
+  .layer { animation: none; }
+}

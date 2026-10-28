@@ -1,0 +1,37 @@
+<section class="narrow detail">
+  <a routerLink="/students" class="back">← К списку студентов</a>
+
+  @if (state().loading) {
+    <app-loader />
+  }
+
+  @if (state().error; as error) {
+    <div class="panel">
+      <h2>{{ error.status === 404 ? 'Студент не найден' : 'Ошибка' }}</h2>
+      <p>{{ error.message }}</p>
+    </div>
+  }
+
+  @if (state().data; as student) {
+    <div class="panel">
+      <div class="header">
+        <h2>Досье студента</h2>
+        <button type="button" class="btn" (click)="exportJson(student)">Выгрузить в JSON</button>
+        @if (store.isAdmin()) {
+          <a [routerLink]="['/students', student.id, 'edit']" class="btn btn-edit">Редактировать</a>
+          <button
+            type="button"
+            class="btn btn-del"
+            [class.confirm]="confirm()"
+            [disabled]="deleteAction.busy()"
+            (click)="remove(student)"
+            (blur)="confirm.set(false)"
+          >
+            {{ deleteAction.busy() ? 'Удаление...' : confirm() ? 'Точно удалить?' : 'Удалить' }}
+          </button>
+        }
+      </div>
+      <app-student-card [student]="student" />
+    </div>
+  }
+</section>

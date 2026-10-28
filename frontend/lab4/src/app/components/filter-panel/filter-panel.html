@@ -1,0 +1,46 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="panel filter-form">
+  <p class="hint">Точное совпадение. Несколько значений в одном поле — через запятую</p>
+  <div class="fields">
+    <label>
+      Номер ИСУ
+      <input type="text" formControlName="id" inputmode="numeric" placeholder="501492, 912852" />
+      <small class="field-error">{{ errorText(form.controls.id) }}</small>
+    </label>
+    <label>
+      ФИО
+      <input type="text" formControlName="name" placeholder="Иван Виноградов" />
+    </label>
+    <label>
+      Номер группы
+      <input type="text" formControlName="group" placeholder="P3223, P3224" />
+    </label>
+    <label>
+      Номер общежития
+      <input type="text" formControlName="dormitory" inputmode="numeric" placeholder="8" />
+      <small class="field-error">{{ errorText(form.controls.dormitory) }}</small>
+    </label>
+    <label>
+      Номер комнаты
+      <input type="text" formControlName="room" inputmode="numeric" placeholder="34" />
+      <small class="field-error">{{ errorText(form.controls.room) }}</small>
+    </label>
+    <label>
+      Срок заселения
+      <input type="date" formControlName="moveinDate" />
+    </label>
+    <label>
+      Заметки
+      <input type="text" formControlName="notes" placeholder="Точный текст заметки" />
+    </label>
+    <fieldset formGroupName="country">
+      <legend>Гражданство</legend>
+      @for (country of countries; track country) {
+        <label class="check"><input type="checkbox" [formControlName]="country" /> {{ country }}</label>
+      }
+    </fieldset>
+  </div>
+  <div class="actions">
+    <button type="submit" class="btn">Применить</button>
+    <button type="button" class="btn btn-del" (click)="clear()">Сбросить</button>
+  </div>
+</form>

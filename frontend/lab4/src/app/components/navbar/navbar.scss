@@ -1,0 +1,49 @@
+@use "mixins" as *;
+
+nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  min-height: 48px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  @include glass-gradient;
+}
+
+a {
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+a:hover,
+a.active {
+  color: var(--color-accent);
+  background: rgba(0, 200, 255, 0.08);
+}
+
+.icon {
+  height: 32px;
+  padding: 0;
+}
+
+.icon img {
+  height: 100%;
+  width: auto;
+  display: block;
+  border-radius: 50%;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.role {
+  font-size: 0.8em;
+  color: var(--color-muted);
+}

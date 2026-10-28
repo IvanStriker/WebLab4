@@ -1,0 +1,15 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rights {
+  margin: 8px 0 8px 20px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

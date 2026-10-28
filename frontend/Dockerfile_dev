@@ -1,0 +1,8 @@
+FROM node:slim
+
+SHELL ["/bin/bash", "-c"]
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN npm install -g @angular/cli
+
+CMD ["sleep", "infinity"]

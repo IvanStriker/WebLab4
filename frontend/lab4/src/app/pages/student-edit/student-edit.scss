@@ -1,0 +1,11 @@
+.edit {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.back {
+  color: var(--color-accent);
+}

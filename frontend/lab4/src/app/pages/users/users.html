@@ -1,0 +1,25 @@
+<h1>Учетные записи</h1>
+
+@if (state().loading) {
+  <app-loader />
+}
+
+@if (state().error; as error) {
+  <div class="panel">
+    <p>{{ error.message }}</p>
+    <button type="button" class="btn" (click)="reload()">Повторить</button>
+  </div>
+}
+
+@if (state().data; as users) {
+  <div class="grid">
+    @for (user of users; track user.id) {
+      <app-user-card
+        [user]="user"
+        [editable]="true"
+        [busy]="savingId() === user.id"
+        (save)="save(user, $event)"
+      />
+    }
+  </div>
+}

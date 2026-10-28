@@ -1,0 +1,6 @@
+target/
+.env
+.idea/
+*.iml
+*:Zone.Identifier
+__pycache__/

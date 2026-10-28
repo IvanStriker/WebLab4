@@ -1,0 +1,6 @@
+lab4/node_modules
+lab4/dist
+lab4/.angular
+lab4/.vscode
+Dockerfile
+Dockerfile_dev

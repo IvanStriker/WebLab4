@@ -1,0 +1,21 @@
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.back {
+  color: var(--color-accent);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.header h2 {
+  margin-right: auto;
+}

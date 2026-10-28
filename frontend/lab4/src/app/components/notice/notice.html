@@ -1,0 +1,7 @@
+<div class="list">
+  @for (notice of store.notices(); track notice.id) {
+    <div class="notice" [class.error]="notice.error" role="alert" (click)="store.remove(notice.id)">
+      {{ notice.text }}
+    </div>
+  }
+</div>

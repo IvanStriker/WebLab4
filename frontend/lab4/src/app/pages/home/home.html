@@ -1,0 +1,22 @@
+<section class="panel hero">
+  <h1>CRM студентов</h1>
+  <p>Учёт студентов, заселяющихся в общежития ИТМО.</p>
+
+  @if (store.user(); as user) {
+    <p>Вы вошли как <strong>{{ user.username }}</strong> ({{ user.role === 'ADMIN' ? 'администратор' : 'пользователь' }}).</p>
+    <div class="actions">
+      <a routerLink="/students" class="btn">Список студентов</a>
+      @if (store.isAdmin()) {
+        <a routerLink="/students/new" class="btn btn-save">Добавить студента</a>
+        <a routerLink="/users" class="btn btn-edit">Пользователи</a>
+      }
+      <a routerLink="/profile" class="btn btn-del">Профиль</a>
+    </div>
+  } @else {
+    <p>Чтобы работать со списком студентов, войдите или зарегистрируйтесь.</p>
+    <div class="actions">
+      <a routerLink="/login" class="btn">Войти</a>
+      <a routerLink="/register" class="btn btn-save">Зарегистрироваться</a>
+    </div>
+  }
+</section>

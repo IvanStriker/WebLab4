@@ -1,0 +1,45 @@
+<div class="card panel">
+  @if (!editing()) {
+    <div class="row"><strong>ID</strong><span>{{ user().id }}</span></div>
+    <div class="row"><strong>Имя пользователя</strong><span>{{ user().username }}</span></div>
+    <div class="row"><strong>Почта</strong><span>{{ user().email }}</span></div>
+    <div class="row">
+      <strong>Роль</strong>
+      <span class="badge" [class.admin]="user().role === 'ADMIN'">{{ user().role }}</span>
+    </div>
+    @if (editable()) {
+      <button type="button" class="btn btn-edit" (click)="startEdit()">Редактировать</button>
+    }
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+      <label>
+        Имя пользователя
+        <input formControlName="username" autocomplete="off" />
+        <small class="field-error">{{ errorText(form.controls.username, 'От 3 до 32 символов: латинские буквы, цифры и _') }}</small>
+      </label>
+      <label>
+        Почта
+        <input formControlName="email" type="email" autocomplete="off" />
+        <small class="field-error">{{ errorText(form.controls.email, 'Адрес почты, например name@mail.ru') }}</small>
+      </label>
+      <label>
+        Роль
+        <select formControlName="role">
+          <option value="USER">USER</option>
+          <option value="ADMIN">ADMIN</option>
+        </select>
+      </label>
+      <label>
+        Новый пароль
+        <input formControlName="password" type="password" placeholder="не менять" autocomplete="new-password" />
+        <small class="field-error">{{ errorText(form.controls.password) }}</small>
+      </label>
+      <div class="actions">
+        <button type="submit" class="btn btn-save" [disabled]="busy()">
+          {{ busy() ? 'Сохранение...' : 'Сохранить' }}
+        </button>
+        <button type="button" class="btn btn-del" [disabled]="busy()" (click)="cancel()">Отмена</button>
+      </div>
+    </form>
+  }
+</div>

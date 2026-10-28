@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Интерфейс для регистрации студентов: ИТМО | 2 курс | WEB | 2 LAB</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="same-origin">
+        <meta name="robots" content="index, follow">
+        <meta name="creator" content="ИТМО: Рябков, Виноградов">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+        <link rel="icon" href="static/main/img/favicon.ico">
+        <link rel="stylesheet" href="static/main/css/styles.css">
+    </head>
+    <body>
+        <header>
+            <div id="user-info" class="header-user hidden">
+                <span id="current-user"></span>
+                <button id="users-btn" type="button" class="admin-only">Пользователи</button>
+                <button id="logout-btn" type="button">Выйти</button>
+            </div>
+        </header>
+
+        <div id="login-screen" class="modal-overlay">
+            <form id="login-form" class="modal">
+                <h2>Вход в систему</h2>
+                <label for="login-username">Имя пользователя</label>
+                <input type="text" id="login-username" name="username" required autocomplete="username" placeholder="admin">
+                <label for="login-password">Пароль</label>
+                <input type="password" id="login-password" name="password" required autocomplete="current-password">
+                <p id="login-error" class="login-error hidden"></p>
+                <button type="submit">Войти</button>
+            </form>
+        </div>
+
+        <h1>CRM студентов</h1>
+        <div>
+            <div class="top-actions">
+                <button id="toggle-add-student" type="button" class="admin-only">Добавить студента</button>
+                <button id="toggle-filter" type="button">Фильтры</button>
+            </div>
+
+            <form id="add-student-form" class="hidden">
+                <h2 class="hidden">Форма добавления студента</h2>
+                <div><h3>Обязательно к заполнению</h3>
+                <label for="add-id">Номер ИСУ</label><br/>
+                <input type="number" name="id" min="1" required placeholder="912852" id="add-id"><br/>
+                <label for="add-name">ФИО</label><br/>
+                <input type="text" name="name" required pattern="[А-Яа-яЁёA-Za-z\-]+(\s+[А-Яа-яЁёA-Za-z\-]+)+" title="Минимум два слова: фамилия и имя" placeholder="Долматов Алексей Сергеевич" id="add-name"><br/>
+                <label for="add-group">Номер группы</label><br/>
+                <input type="text" name="group" required pattern="[A-Z]\d{4}" maxlength="5" title="Заглавная латинская буква и 4 цифры, например P3223" placeholder="P3223" id="add-group"><br/>
+                </div>
+                <div><h3>Дополнительные сведения</h3>
+                <label for="add-dormitory">Номер общежития</label><br/>
+                <input type="number" name="dormitory" min="1" placeholder="5" id="add-dormitory"><br/>
+                <label for="add-room">Номер комнаты</label><br/>
+                <input type="number" name="room" min="1" placeholder="34" id="add-room"><br/>
+                <label for="add-moveinDate">Срок заселения</label><br/>
+                <input type="date" name="moveinDate" id="add-moveinDate"><br/>
+                <label for="add-country">Гражданство</label><br/>
+                <select name="country" id="add-country">
+                    <option value="">Не указано</option>
+                    <option>Россия</option>
+                    <option>Беларусь</option>
+                    <option>Китай</option>
+                </select><br/>
+                <label for="add-notes">Заметки</label><br/>
+                <input type="text" name="notes" placeholder="Творческий человек с нестабильным психическим состоянием." id="add-notes"><br/>
+                <button type="submit">Сохранить</button>
+                </div>
+            </form>
+
+            <form id="filter-form" class="hidden">
+                <h2 class="hidden">Фильтрация студентов</h2>
+                <p class="filter-hint">Несколько значений в одном поле — через запятую</p>
+                <div class="filter-fields">
+                    <div>
+                        <label for="filter-id">Номер ИСУ</label><br/>
+                        <input type="text" name="id" inputmode="numeric" placeholder="501492, 912852" id="filter-id">
+                    </div>
+                    <div>
+                        <label for="filter-name">ФИО</label><br/>
+                        <input type="text" name="name" placeholder="Иван Виноградов" id="filter-name">
+                    </div>
+                    <div>
+                        <label for="filter-group">Номер группы</label><br/>
+                        <input type="text" name="group" placeholder="P3223, P3224" id="filter-group">
+                    </div>
+                    <div>
+                        <label for="filter-dormitory">Номер общежития</label><br/>
+                        <input type="text" name="dormitory" inputmode="numeric" placeholder="8" id="filter-dormitory">
+                    </div>
+                    <div>
+                        <label for="filter-room">Номер комнаты</label><br/>
+                        <input type="text" name="room" inputmode="numeric" placeholder="34" id="filter-room">
+                    </div>
+                    <div>
+                        <label for="filter-moveinDate">Срок заселения</label><br/>
+                        <input type="date" name="moveinDate" id="filter-moveinDate">
+                    </div>
+                    <fieldset>
+                        <legend>Гражданство</legend>
+                        <label><input type="checkbox" name="country" value="Россия"> Россия</label>
+                        <label><input type="checkbox" name="country" value="Беларусь"> Беларусь</label>
+                        <label><input type="checkbox" name="country" value="Китай"> Китай</label>
+                    </fieldset>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit">Применить</button>
+                    <button type="reset" class="del-btn">Сбросить</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="notice" class="notice hidden" role="alert"></div>
+
+        <main>
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="9" class="table-toolbar">
+                            Список студентов (<span id="students-count">0</span>)
+                            <button class="full-info-btn" type="button">Посмотреть подробную информацию</button>
+                            <code id="last-request" class="last-request"></code>
+                        </th>
+                    </tr>
+                    <tr class="table-header-row">
+                        <th data-key="id">ИСУ</th>
+                        <th data-key="name">ФИО</th>
+                        <th data-key="group">№ Группы</th>
+                        <th data-key="dormitory" class="extra-col hidden">№ Общежития</th>
+                        <th data-key="room" class="extra-col hidden">№ Комнаты</th>
+                        <th data-key="moveinDate" class="extra-col hidden">Срок заселения (вкл.)</th>
+                        <th data-key="country" class="extra-col hidden">Гражданство</th>
+                        <th data-key="notes" class="extra-col hidden">Заметки</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="pagination" class="pagination hidden">
+                <button id="prev-page" type="button">Назад</button>
+                <span id="page-info"></span>
+                <button id="next-page" type="button">Вперед</button>
+            </div>
+        </main>
+
+        <template id="student-row">
+            <tr>
+                <td data-key="id"></td>
+                <td data-key="name"></td>
+                <td data-key="group"></td>
+                <td data-key="dormitory" class="extra-col"></td>
+                <td data-key="room" class="extra-col"></td>
+                <td data-key="moveinDate" class="extra-col"></td>
+                <td data-key="country" class="extra-col"></td>
+                <td data-key="notes" class="extra-col"></td>
+                <td>
+                    <div class="row-actions">
+                        <button class="del-btn admin-only" type="button">Удалить</button>
+                        <button class="save-btn hidden admin-only" type="button">Сохранить изменения</button>
+                        <button class="edit-btn admin-only" type="button">Редактировать</button>
+                        <button class="info-btn" type="button" title="Информация"><i class="fa-solid fa-info"></i></button>
+                    </div>
+                </td>
+            </tr>
+        </template>
+
+        <div id="info-modal" class="modal-overlay hidden">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>Досье пользователя</h2>
+                    <button id="modal-edit-btn" class="edit-btn admin-only" type="button">Редактировать</button>
+                    <button id="modal-save-btn" class="save-btn hidden admin-only" type="button">Сохранить изменения</button>
+                    <button id="modal-export-btn" class="modal-export-btn" type="button">Выгрузить в JSON</button>
+                </div>
+                <ul id="modal-info-list" class="modal-info-list"></ul>
+            </div>
+        </div>
+
+        <div id="users-modal" class="modal-overlay hidden">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2>Учетные записи</h2>
+                </div>
+                <p id="users-error" class="login-error hidden"></p>
+                <table>
+                    <thead>
+                        <tr class="table-header-row">
+                            <th>ID</th>
+                            <th>Имя пользователя</th>
+                            <th>Почта</th>
+                            <th>Роль</th>
+                            <th>Новый пароль</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <template id="user-row">
+            <tr>
+                <td data-key="id"></td>
+                <td data-key="username"></td>
+                <td data-key="email"></td>
+                <td data-key="role"></td>
+                <td data-key="password"></td>
+                <td>
+                    <div class="row-actions">
+                        <button class="save-btn hidden" type="button">Сохранить изменения</button>
+                        <button class="edit-btn" type="button">Редактировать</button>
+                    </div>
+                </td>
+            </tr>
+        </template>
+
+        <footer>
+            <ul>
+                <li><span>Разработчики</span>Рябков Александр &amp;  Виноградов Иван</li>
+                <li><span>Группа</span>P3223</li>
+                <li><span>Год</span>2026©</li>
+            </ul>
+        </footer>
+        <script type="module" src="static/main/js/scripts.js"></script>
+    </body>
+</html>

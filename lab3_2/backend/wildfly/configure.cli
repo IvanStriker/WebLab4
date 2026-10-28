@@ -1,0 +1,9 @@
+embed-server --server-config=standalone-microprofile.xml --std-out=discard
+
+module add --name=org.postgresql --resources=${postgres.jar} --dependencies=java.se
+
+/subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql, driver-module-name=org.postgresql, driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
+
+/subsystem=datasources/data-source=StudentsDS:add(jndi-name=java:jboss/datasources/StudentsDS, driver-name=postgresql, connection-url="${env.DB_URL}", user-name="${env.DB_USER}", password="${env.DB_PASSWORD}")
+
+stop-embedded-server

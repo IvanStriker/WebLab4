@@ -1,0 +1,27 @@
+.list {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: min(600px, 90vw);
+}
+
+.notice {
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--color-save);
+  border: 1px solid var(--color-save-dark);
+  color: #fff;
+  white-space: pre-line;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.notice.error {
+  background: var(--color-danger);
+  border-color: var(--color-danger-dark);
+}

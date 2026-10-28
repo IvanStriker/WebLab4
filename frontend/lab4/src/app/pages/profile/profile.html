@@ -1,0 +1,31 @@
+<section class="narrow profile">
+  <h1>Профиль</h1>
+  @if (store.user(); as user) {
+    <app-user-card [user]="user" />
+
+    <div class="panel">
+      <h3>Права доступа</h3>
+      <ul class="rights">
+        <li>Просмотр списка студентов, поиск, фильтрация и сортировка</li>
+        <li>Просмотр подробной информации о студенте</li>
+        @if (store.isAdmin()) {
+          <li>Добавление, изменение и удаление студентов</li>
+          <li>Управление учетными записями пользователей</li>
+        }
+      </ul>
+      @if (tokenExpires()) {
+        <p class="muted">Access-токен действует до {{ tokenExpires() }}, затем обновляется автоматически</p>
+      }
+    </div>
+
+    <div class="actions">
+      <a routerLink="/students" class="btn">К списку студентов</a>
+      <button type="button" class="btn btn-edit" [disabled]="reloadAction.busy()" (click)="reloadAction.run(undefined)">
+        {{ reloadAction.busy() ? 'Загрузка...' : 'Обновить данные' }}
+      </button>
+      <button type="button" class="btn btn-del" [disabled]="logoutAction.busy()" (click)="logoutAction.run(undefined)">
+        Выйти
+      </button>
+    </div>
+  }
+</section>

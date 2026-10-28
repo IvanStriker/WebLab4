@@ -1,0 +1,27 @@
+<nav>
+  <a routerLink="/" class="icon" title="Главная">
+    <img src="assets/icons/home.png" alt="Главная" />
+  </a>
+
+  @if (store.isLoggedIn()) {
+    <a routerLink="/students" routerLinkActive="active">Студенты</a>
+    @if (store.isAdmin()) {
+      <a routerLink="/users" routerLinkActive="active">Пользователи</a>
+    }
+  }
+
+  <div class="right">
+    @if (store.user(); as user) {
+      <a routerLink="/profile" routerLinkActive="active">
+        {{ user.username }}
+        <span class="role">{{ user.role === 'ADMIN' ? 'администратор' : 'пользователь' }}</span>
+      </a>
+      <button type="button" class="btn btn-del" (click)="logout()">Выйти</button>
+    } @else {
+      <a routerLink="/register" routerLinkActive="active">Регистрация</a>
+      <a routerLink="/login" class="icon" title="Вход">
+        <img src="assets/icons/login.png" alt="Вход" />
+      </a>
+    }
+  </div>
+</nav>

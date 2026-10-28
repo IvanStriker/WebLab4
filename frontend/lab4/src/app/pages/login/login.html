@@ -1,0 +1,20 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="panel narrow auth-form">
+  <h2>Вход в систему</h2>
+  <label>
+    Имя пользователя
+    <input type="text" formControlName="username" autocomplete="username" placeholder="admin" />
+    <small class="field-error">{{ errorText(form.controls.username) }}</small>
+  </label>
+  <label>
+    Пароль
+    <input type="password" formControlName="password" autocomplete="current-password" />
+    <small class="field-error">{{ errorText(form.controls.password) }}</small>
+  </label>
+  @if (serverError()) {
+    <p class="form-error">{{ serverError() }}</p>
+  }
+  <button type="submit" class="btn" [disabled]="action.busy()">
+    {{ action.busy() ? 'Вход...' : 'Войти' }}
+  </button>
+  <p class="switch">Нет учетной записи? <a routerLink="/register">Зарегистрироваться</a></p>
+</form>

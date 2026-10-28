@@ -1,0 +1,438 @@
+:root {
+    --font-main: Verdana, Arial, sans-serif;
+
+    --color-text: #2b3a4a;
+    --color-heading: #2f5f8a;
+    --color-page-bg: #eef3f8;
+    --color-panel-bg: #d6e4f0;
+    --color-border: #a9c3dc;
+    --color-white: #ffffff;
+
+    --color-btn: #4a7ab5;
+    --color-btn-dark: #3a6699;
+    --color-edit: #d9a441;
+    --color-edit-dark: #b8860b;
+    --color-save: #4f9a5c;
+    --color-save-dark: #3d7a48;
+    --color-del: #8a97a3;
+    --color-del-dark: #6f7c88;
+    --color-danger: #b23b38;
+    --color-danger-dark: #8f2f2c;
+
+    --space-v-sm: 0.67vh;
+    --space-v-md: 0.89vh;
+    --space-v-lg: 1.33vh;
+    --space-v-xl: 2.67vh;
+    --space-h-sm: 0.5vw;
+    --space-h-md: 0.75vw;
+    --space-h-lg: 1.5vw;
+}
+
+body {
+    height: 100vh;
+    margin: 0;
+    font-family: var(--font-main);
+    color: var(--color-text);
+    background-color: var(--color-page-bg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-v-xl);
+    overflow-x: clip;
+}
+
+main {
+    flex: 1;
+    overflow: auto;
+    min-height: 30vh;
+}
+
+h1, h2, h3 {
+    color: var(--color-heading);
+    font-family: var(--font-main);
+}
+
+button {
+    font-family: var(--font-main);
+    background-color: var(--color-btn);
+    color: var(--color-white);
+    border: 1px solid var(--color-btn-dark);
+    padding: var(--space-v-sm) var(--space-h-md);
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--color-btn-dark);
+}
+
+.row-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-v-md) var(--space-h-sm);
+}
+
+.edit-btn {
+    background-color: var(--color-edit);
+    border-color: var(--color-edit-dark);
+}
+
+.edit-btn:hover {
+    background-color: var(--color-edit-dark);
+}
+
+.save-btn {
+    background-color: var(--color-save);
+    border-color: var(--color-save-dark);
+}
+
+.save-btn:hover {
+    background-color: var(--color-save-dark);
+}
+
+.del-btn {
+    background-color: var(--color-del);
+    border-color: var(--color-del-dark);
+}
+
+.del-btn:hover {
+    background-color: var(--color-del-dark);
+}
+
+.del-btn.confirm {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger-dark);
+}
+
+.del-btn.confirm:hover {
+    background-color: var(--color-danger-dark);
+}
+
+button:active {
+    transform: translateY(0.11vh);
+    filter: brightness(0.9);
+}
+
+.info-btn {
+    width: 3.56vh;
+    height: 3.56vh;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay:not(.hidden) {
+    display: flex;
+}
+
+.modal {
+    position: relative;
+    background-color: var(--color-white);
+    color: var(--color-text);
+    padding: var(--space-v-xl) var(--space-h-lg);
+    border-radius: 0.89vh;
+    min-width: 20vw;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-v-lg) var(--space-h-md);
+    margin-bottom: 1.78vh;
+}
+
+.modal-header h2 {
+    margin: 0;
+    margin-right: auto;
+}
+
+.modal-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modal-info-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-h-sm);
+    padding: var(--space-v-sm) 0;
+    border-bottom: 1px solid var(--color-panel-bg);
+}
+
+.modal-info-list li:last-child {
+    border-bottom: none;
+}
+
+.modal-value-input {
+    flex: 1;
+    min-width: 10vw;
+}
+
+input, label, select {
+    font-family: var(--font-main);
+}
+
+td input, td select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 8vw;
+}
+
+table {
+    border-color: var(--color-border);
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: var(--space-v-md) var(--space-h-md);
+    border: 1px solid var(--color-border);
+    text-align: center;
+    vertical-align: middle;
+}
+
+thead th.table-toolbar button {
+    margin-top: 0.28vh;
+}
+
+.table-toolbar {
+    background-color: var(--color-panel-bg);
+    color: var(--color-heading);
+    font-weight: bold;
+    border-bottom: var(--space-v-lg) solid var(--color-page-bg);
+}
+
+.table-header-row {
+    background-color: var(--color-panel-bg);
+}
+
+.table-header-row th {
+    color: var(--color-heading);
+    font-family: var(--font-main);
+}
+
+header, footer {
+    background-color: var(--color-panel-bg);
+    padding: var(--space-v-xl) 2vw;
+}
+
+header {
+    border-bottom: 1px solid var(--color-border);
+}
+
+h1 {
+    text-align: center;
+    margin: 0;
+}
+
+body > div, main {
+    margin: 0 var(--space-h-lg);
+}
+
+#add-student-form:not(.hidden) {
+    display: flex;
+    gap: 2vw;
+    text-align: left;
+}
+
+#add-student-form button {
+    margin-top: 1vh;
+}
+
+.top-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-v-md) var(--space-h-sm);
+    margin-bottom: var(--space-v-lg);
+}
+
+#filter-form:not(.hidden) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-v-lg);
+    padding: var(--space-v-lg) var(--space-h-lg);
+    background-color: var(--color-panel-bg);
+    border: 1px solid var(--color-border);
+}
+
+.filter-hint {
+    margin: 0;
+    font-size: 0.9em;
+}
+
+.filter-fields {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-v-lg) var(--space-h-lg);
+}
+
+.filter-fields fieldset {
+    display: flex;
+    gap: var(--space-h-md);
+    margin: 0;
+    border: 1px solid var(--color-border);
+}
+
+.filter-actions {
+    display: flex;
+    gap: var(--space-h-sm);
+}
+
+.notice {
+    position: fixed;
+    top: var(--space-v-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    max-width: 80vw;
+    padding: var(--space-v-md) var(--space-h-lg);
+    background-color: var(--color-save);
+    border: 1px solid var(--color-save-dark);
+    color: var(--color-white);
+    white-space: pre-line;
+    cursor: pointer;
+}
+
+.notice.error {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger-dark);
+}
+
+.last-request {
+    display: block;
+    margin-top: var(--space-v-sm);
+    font-weight: normal;
+    font-size: 0.85em;
+    color: var(--color-text);
+}
+
+.empty-row {
+    color: var(--color-del-dark);
+    font-style: italic;
+}
+
+footer ul {
+    display: flex;
+    justify-content: center;
+    gap: 3vw;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+footer ul li {
+    display: flex;
+    flex-direction: column;
+    align-content: stretch;
+    justify-content: center;
+    text-align: center;
+}
+
+footer ul li span {
+    font-weight: bold;
+    color: var(--color-heading);
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media (max-width: 700px) {
+    #add-student-form:not(.hidden) {
+        flex-direction: column;
+        gap: 1.78vh;
+    }
+
+    .filter-fields {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    footer ul {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-v-lg);
+    }
+}
+
+.header-user {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-h-md);
+}
+
+#current-user {
+    font-size: 0.9em;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8vh;
+    min-width: min(320px, 90vw);
+}
+
+#login-form h2 {
+    margin: 0 0 1.5vh;
+    text-align: center;
+}
+
+#login-form label {
+    font-size: 0.9em;
+    margin-bottom: -0.4vh;
+}
+
+#login-form input {
+    padding: var(--space-v-sm) var(--space-h-sm);
+    border: 1px solid var(--color-border);
+    font-size: 1em;
+}
+
+#login-form button[type="submit"] {
+    margin-top: 0.5vh;
+}
+
+.login-error {
+    color: var(--color-danger);
+    margin: 0;
+    font-size: 0.9em;
+    white-space: pre-line;
+}
+
+body.role-user .admin-only {
+    display: none !important;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-h-md);
+    margin-top: var(--space-v-lg);
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}

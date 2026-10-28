@@ -1,0 +1,68 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="student-form panel">
+  <fieldset [disabled]="busy()">
+    <div class="column">
+      <h3>Обязательно к заполнению</h3>
+      <label>
+        Номер ИСУ
+        <input type="number" formControlName="id" min="1" placeholder="912852" />
+        <small class="field-error">{{ errorText(form.controls.id) || serverError('id') }}</small>
+      </label>
+      <label>
+        ФИО
+        <input type="text" formControlName="name" placeholder="Долматов Алексей Сергеевич" />
+        <small class="field-error">
+          {{ errorText(form.controls.name, 'Минимум два слова из букв и дефисов') || serverError('name') }}
+        </small>
+      </label>
+      <label>
+        Номер группы
+        <input type="text" formControlName="group" maxlength="5" placeholder="P3223" />
+        <small class="field-error">
+          {{ errorText(form.controls.group, 'Заглавная латинская буква и 4 цифры, например P3223') || serverError('group') }}
+        </small>
+      </label>
+    </div>
+
+    <div class="column">
+      <h3>Дополнительные сведения</h3>
+      <label>
+        Номер общежития
+        <input type="number" formControlName="dormitory" min="1" placeholder="5" />
+        <small class="field-error">{{ errorText(form.controls.dormitory) || serverError('dormitory') }}</small>
+      </label>
+      <label>
+        Номер комнаты
+        <input type="number" formControlName="room" min="1" placeholder="34" />
+        <small class="field-error">{{ errorText(form.controls.room) || serverError('room') }}</small>
+      </label>
+      <label>
+        Срок заселения
+        <input type="date" formControlName="moveinDate" [min]="minDate" [max]="maxDate" />
+        <small class="field-error">{{ errorText(form.controls.moveinDate) || serverError('moveinDate') }}</small>
+      </label>
+      <label>
+        Гражданство
+        <select formControlName="country">
+          <option value="">Не указано</option>
+          @for (country of countries; track country) {
+            <option [value]="country">{{ country }}</option>
+          }
+        </select>
+        <small class="field-error">{{ serverError('country') }}</small>
+      </label>
+      <label>
+        Заметки
+        <textarea formControlName="notes" rows="3" placeholder="Любая дополнительная информация"></textarea>
+        <small class="hint">{{ form.controls.notes.value.length }} / 500</small>
+        <small class="field-error">{{ errorText(form.controls.notes) || serverError('notes') }}</small>
+      </label>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button type="submit" class="btn btn-save" [disabled]="busy()">
+      {{ busy() ? 'Сохранение...' : 'Сохранить' }}
+    </button>
+    <button type="button" class="btn btn-del" [disabled]="busy()" (click)="cancelled.emit()">Отмена</button>
+  </div>
+</form>
