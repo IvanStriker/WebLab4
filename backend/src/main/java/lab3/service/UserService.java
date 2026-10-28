@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
+import lab3.dto.UserCreateRequest;
 import lab3.dto.UserResponse;
 import lab3.dto.UserUpdateRequest;
 import lab3.model.User;
@@ -33,6 +34,33 @@ public class UserService {
 
     public List<UserResponse> findAll() {
         return users.findAll().stream().map(UserResponse::from).toList();
+    }
+
+    @Transactional
+    public UserResponse create(UserCreateRequest request, String currentUsername) {
+        validator.validate(request);
+        validator.checkPasswordBytes(request.password());
+
+        Map<String, String> taken = new TreeMap<>();
+        if (users.findByUsername(request.username()).isPresent()) {
+            taken.put("username", "Имя пользователя уже занято");
+        }
+        if (users.existsByEmail(request.email())) {
+            taken.put("email", "Почта уже используется");
+        }
+        if (!taken.isEmpty()) {
+            throw new ApiException(409, "Пользователь уже существует", taken);
+        }
+
+        String hash = BCrypt.hashpw(request.password(), BCrypt.gensalt(12));
+        User user = new User(request.username(), request.email(), hash, request.role());
+        try {
+            users.save(user);
+        } catch (PersistenceException e) {
+            throw new ApiException(409, "Пользователь с таким именем или почтой уже существует");
+        }
+        log.info("Пользователь {} создал учетную запись {} с ролью {}", currentUsername, user.getUsername(), user.getRole());
+        return UserResponse.from(user);
     }
 
     @Transactional

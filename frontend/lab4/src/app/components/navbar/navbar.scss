@@ -4,9 +4,9 @@ nav {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
-  min-height: 48px;
-  padding: 8px 16px;
+  gap: 1rem;
+  min-height: 3rem;
+  padding: 0.5rem 1rem;
   box-sizing: border-box;
   @include glass-gradient;
 }
@@ -14,8 +14,8 @@ nav {
 a {
   color: var(--color-text);
   text-decoration: none;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
 }
 
 a:hover,
@@ -25,7 +25,7 @@ a.active {
 }
 
 .icon {
-  height: 32px;
+  height: 2rem;
   padding: 0;
 }
 
@@ -39,11 +39,40 @@ a.active {
 .right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   margin-left: auto;
 }
 
 .role {
   font-size: 0.8em;
   color: var(--color-muted);
+}
+
+.ico {
+  display: none;
+}
+
+@media (max-width: 44rem) {
+  nav {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+
+  .right {
+    gap: 0.5rem;
+  }
+
+  .label {
+    display: none;
+  }
+
+  .ico {
+    display: inline-flex;
+  }
+
+  a:not(.icon),
+  button {
+    display: inline-flex;
+    padding: 0.25rem;
+  }
 }

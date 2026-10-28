@@ -2,15 +2,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 12px;
+  gap: 0.625rem;
+  padding: 0.75rem;
   color: var(--color-muted);
 }
 
 .spinner {
-  width: 18px;
-  height: 18px;
-  border: 3px solid rgba(0, 200, 255, 0.25);
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 0.1875rem solid rgba(0, 200, 255, 0.25);
   border-top-color: var(--color-accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;

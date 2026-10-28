@@ -32,9 +32,9 @@ export class StudentEdit {
     { initialValue: { loading: true, data: null, error: null } as LoadState<Student | null> },
   );
 
-  protected readonly saveAction = new Action((changes: StudentChanges) => {
+  protected readonly saveAction = new Action((student: StudentChanges) => {
     const id = this.id();
-    return id ? this.api.update(Number(id), changes) : this.api.create(changes);
+    return id ? this.api.replace(Number(id), student) : this.api.create(student);
   });
 
   constructor() {
@@ -50,15 +50,10 @@ export class StudentEdit {
     });
   }
 
-  save(changes: StudentChanges): void {
+  save(student: StudentChanges): void {
     this.formError.set('');
     this.fieldErrors.set({});
-    if (!this.isNew() && Object.keys(changes).length === 0) {
-      this.notices.success('Изменений нет');
-      this.back();
-      return;
-    }
-    this.saveAction.run(changes);
+    this.saveAction.run(student);
   }
 
   back(): void {

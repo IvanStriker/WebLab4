@@ -1,13 +1,14 @@
 import { Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
+import { map, merge, of, switchMap } from 'rxjs';
 import { Loader } from '../../components/loader/loader';
 import { StudentCard } from '../../components/student-card/student-card';
 import { AuthStore } from '../../core/auth.store';
 import { fullMessage } from '../../core/errors';
 import { Student } from '../../core/models';
 import { NoticeStore } from '../../core/notice.store';
-import { Action, LoadState, loadWith } from '../../core/rx';
+import { Action, LoadState, loadWith, poll } from '../../core/rx';
 import { StudentsApi } from '../../core/students.api';
 import { loadStudent } from '../student-id';
 
@@ -28,7 +29,13 @@ export class StudentDetail {
   protected readonly confirm = signal(false);
 
   protected readonly state = toSignal(
-    toObservable(this.id).pipe(loadWith((id) => loadStudent(this.api, id))),
+    toObservable(this.id).pipe(
+      switchMap((id) => merge(of({ id, silent: false }), poll().pipe(map(() => ({ id, silent: true }))))),
+      loadWith(
+        (request) => loadStudent(this.api, request.id),
+        (request) => request.silent,
+      ),
+    ),
     { initialValue: { loading: true, data: null, error: null } as LoadState<Student> },
   );
 

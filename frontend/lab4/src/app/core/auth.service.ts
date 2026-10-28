@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { catchError, finalize, map, Observable, of, shareReplay, switchMap, tap, throwError } from 'rxjs';
 import { AuthStore } from './auth.store';
 import { toAppError } from './errors';
-import { TokenResponse, User } from './models';
+import { ProfileChanges, TokenResponse, User } from './models';
 import { NoticeStore } from './notice.store';
 
 @Injectable({ providedIn: 'root' })
@@ -30,6 +30,13 @@ export class AuthService {
 
   loadMe(): Observable<User> {
     return this.http.get<User>('/api/auth/me').pipe(tap((user) => this.store.setUser(user)));
+  }
+
+  updateProfile(changes: ProfileChanges): Observable<User> {
+    return this.http.patch<TokenResponse>('/api/auth/me', changes).pipe(
+      tap((tokens) => this.store.setTokens(tokens)),
+      switchMap(() => this.loadMe()),
+    );
   }
 
   restoreSession(): Observable<unknown> {

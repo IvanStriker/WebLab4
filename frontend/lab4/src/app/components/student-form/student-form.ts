@@ -83,18 +83,6 @@ export class StudentForm implements OnChanges {
       country: raw.country || null,
       notes: raw.notes.trim() || null,
     };
-
-    const student = this.student();
-    if (!student) {
-      this.submitted.emit(values);
-      return;
-    }
-    const changes: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(values)) {
-      if (key !== 'id' && value !== student[key as keyof Student]) {
-        changes[key] = value;
-      }
-    }
-    this.submitted.emit(changes as StudentChanges);
+    this.submitted.emit(values);
   }
 }

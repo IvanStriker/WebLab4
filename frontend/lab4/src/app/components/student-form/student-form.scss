@@ -1,6 +1,6 @@
 fieldset {
   display: flex;
-  gap: 32px;
+  gap: 2rem;
   border: none;
 }
 
@@ -8,13 +8,13 @@ fieldset {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0.625rem;
 }
 
 .actions {
   display: flex;
-  gap: 8px;
-  margin-top: 16px;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .hint {
@@ -22,7 +22,7 @@ fieldset {
   text-align: right;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 44rem) {
   fieldset {
     flex-direction: column;
   }

@@ -1,6 +1,5 @@
 <div class="card panel">
   @if (!editing()) {
-    <div class="row"><strong>ID</strong><span>{{ user().id }}</span></div>
     <div class="row"><strong>Имя пользователя</strong><span>{{ user().username }}</span></div>
     <div class="row"><strong>Почта</strong><span>{{ user().email }}</span></div>
     <div class="row">
@@ -28,6 +27,7 @@
           <option value="USER">USER</option>
           <option value="ADMIN">ADMIN</option>
         </select>
+        <small class="field-error"></small>
       </label>
       <label>
         Новый пароль

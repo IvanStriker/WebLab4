@@ -29,8 +29,8 @@ export class StudentsApi {
     return this.http.post<Student>(this.url, student);
   }
 
-  update(id: number, changes: StudentChanges): Observable<Student> {
-    return this.http.patch<Student>(`${this.url}/${id}`, changes);
+  replace(id: number, student: StudentChanges): Observable<Student> {
+    return this.http.put<Student>(`${this.url}/${id}`, student);
   }
 
   remove(id: number): Observable<void> {

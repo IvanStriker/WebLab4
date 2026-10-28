@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User, UserChanges } from './models';
+import { NewUser, User, UserChanges } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class UsersApi {
@@ -9,6 +9,10 @@ export class UsersApi {
 
   list(): Observable<User[]> {
     return this.http.get<User[]>('/api/users');
+  }
+
+  create(user: NewUser): Observable<User> {
+    return this.http.post<User>('/api/users', user);
   }
 
   update(id: number, changes: UserChanges): Observable<User> {

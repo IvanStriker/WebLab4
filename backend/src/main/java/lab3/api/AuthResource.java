@@ -5,6 +5,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import lab3.dto.LoginRequest;
+import lab3.dto.ProfileUpdateRequest;
 import lab3.dto.RefreshRequest;
 import lab3.dto.RegisterRequest;
 import lab3.dto.TokenResponse;
@@ -73,5 +75,13 @@ public class AuthResource {
     @Operation(summary = "Текущий пользователь")
     public UserResponse me() {
         return authService.getUser(securityContext.getUserPrincipal().getName());
+    }
+
+    @PATCH
+    @Path("/me")
+    @SecurityRequirement(name = "bearer")
+    @Operation(summary = "Изменить свои имя, почту или пароль; возвращает новую пару токенов")
+    public TokenResponse updateMe(ProfileUpdateRequest request) {
+        return authService.updateProfile(securityContext.getUserPrincipal().getName(), request);
     }
 }

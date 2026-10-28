@@ -29,7 +29,8 @@ export class UserCard implements OnChanges {
   });
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['user'] && !changes['user'].firstChange) {
+    const change = changes['user'];
+    if (change && !change.firstChange && JSON.stringify(change.previousValue) !== JSON.stringify(change.currentValue)) {
       this.editing.set(false);
     }
   }

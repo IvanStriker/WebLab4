@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
-import { BehaviorSubject, map, switchMap } from 'rxjs';
+import { Router, RouterLink } from '@angular/router';
+import { BehaviorSubject, map, merge, switchMap } from 'rxjs';
 import { Loader } from '../../components/loader/loader';
 import { UserCard } from '../../components/user-card/user-card';
 import { AuthService } from '../../core/auth.service';
@@ -9,7 +9,7 @@ import { AuthStore } from '../../core/auth.store';
 import { fullMessage } from '../../core/errors';
 import { User, UserChanges } from '../../core/models';
 import { NoticeStore } from '../../core/notice.store';
-import { Action, LoadState, loadWith } from '../../core/rx';
+import { Action, LoadState, loadWith, poll } from '../../core/rx';
 import { UsersApi } from '../../core/users.api';
 
 interface UserUpdate {
@@ -18,7 +18,7 @@ interface UserUpdate {
 }
 
 @Component({
-  imports: [UserCard, Loader],
+  imports: [UserCard, Loader, RouterLink],
   selector: 'app-users',
   styleUrl: './users.scss',
   templateUrl: './users.html',
@@ -33,9 +33,17 @@ export class Users {
   private readonly reload$ = new BehaviorSubject<void>(undefined);
   protected readonly savingId = signal<number | null>(null);
 
-  protected readonly state = toSignal(this.reload$.pipe(loadWith(() => this.api.list())), {
-    initialValue: { loading: true, data: null, error: null } as LoadState<User[]>,
-  });
+  protected readonly state = toSignal(
+    merge(this.reload$.pipe(map(() => false)), poll().pipe(map(() => true))).pipe(
+      loadWith(
+        () => this.api.list(),
+        (silent) => silent,
+      ),
+    ),
+    {
+      initialValue: { loading: true, data: null, error: null } as LoadState<User[]>,
+    },
+  );
 
   protected readonly saveAction = new Action((update: UserUpdate) =>
     this.api.update(update.user.id, update.changes).pipe(map(() => update)),

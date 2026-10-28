@@ -9,21 +9,21 @@
 main {
   flex: 1;
   width: 100%;
-  max-width: 1400px;
+  max-width: 94vw;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 3vh 2vw;
   box-sizing: border-box;
 }
 
 footer {
   @include glass-gradient;
-  padding: 16px;
+  padding: 2vh 2vw;
 }
 
 footer ul {
   display: flex;
   justify-content: center;
-  gap: 48px;
+  gap: 4vw;
   list-style: none;
 }
 
@@ -39,9 +39,9 @@ footer span {
   color: var(--color-accent);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 44rem) {
   footer ul {
     flex-direction: column;
-    gap: 12px;
+    gap: 0.75rem;
   }
 }

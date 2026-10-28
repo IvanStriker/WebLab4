@@ -6,10 +6,12 @@ import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import lab3.dto.LoginRequest;
+import lab3.dto.ProfileUpdateRequest;
 import lab3.dto.RefreshRequest;
 import lab3.dto.RegisterRequest;
 import lab3.dto.TokenResponse;
 import lab3.dto.UserResponse;
+import lab3.dto.UserUpdateRequest;
 import lab3.model.RefreshToken;
 import lab3.model.Role;
 import lab3.model.User;
@@ -42,6 +44,9 @@ public class AuthService {
 
     @Inject
     private RequestValidator validator;
+
+    @Inject
+    private UserService userService;
 
     @Transactional
     public UserResponse register(RegisterRequest request) {
@@ -122,6 +127,16 @@ public class AuthService {
         return users.findByUsername(username)
                 .map(UserResponse::from)
                 .orElseThrow(() -> new ApiException(404, "Пользователь не найден"));
+    }
+
+    @Transactional
+    public TokenResponse updateProfile(String username, ProfileUpdateRequest request) {
+        validator.validate(request);
+        User user = users.findByUsername(username)
+                .orElseThrow(() -> new ApiException(404, "Пользователь не найден"));
+        userService.update(user.getId(),
+                new UserUpdateRequest(request.username(), request.email(), null, request.password()), username);
+        return createTokens(user);
     }
 
     private User createUser(String username, String email, String password, Role role) {

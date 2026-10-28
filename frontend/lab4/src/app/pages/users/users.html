@@ -1,5 +1,9 @@
 <h1>Учетные записи</h1>
 
+<div class="toolbar">
+  <a routerLink="/users/new" class="btn btn-save">Добавить пользователя</a>
+</div>
+
 @if (state().loading) {
   <app-loader />
 }

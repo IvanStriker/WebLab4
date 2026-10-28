@@ -6,12 +6,15 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import lab3.dto.UserCreateRequest;
 import lab3.dto.UserResponse;
 import lab3.dto.UserUpdateRequest;
 import lab3.service.UserService;
@@ -40,6 +43,13 @@ public class UserResource {
     @Operation(summary = "Список учетных записей")
     public List<UserResponse> list() {
         return userService.findAll();
+    }
+
+    @POST
+    @Operation(summary = "Создать учетную запись с любой ролью")
+    public Response create(UserCreateRequest request) {
+        UserResponse created = userService.create(request, securityContext.getUserPrincipal().getName());
+        return Response.status(201).entity(created).build();
     }
 
     @PATCH

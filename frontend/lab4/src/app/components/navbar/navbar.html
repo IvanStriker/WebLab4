@@ -4,21 +4,36 @@
   </a>
 
   @if (store.isLoggedIn()) {
-    <a routerLink="/students" routerLinkActive="active">Студенты</a>
+    <a routerLink="/students" routerLinkActive="active" title="Студенты">
+      <app-icon name="students" class="ico" />
+      <span class="label">Студенты</span>
+    </a>
     @if (store.isAdmin()) {
-      <a routerLink="/users" routerLinkActive="active">Пользователи</a>
+      <a routerLink="/users" routerLinkActive="active" title="Пользователи">
+        <app-icon name="users" class="ico" />
+        <span class="label">Пользователи</span>
+      </a>
     }
   }
 
   <div class="right">
     @if (store.user(); as user) {
-      <a routerLink="/profile" routerLinkActive="active">
-        {{ user.username }}
-        <span class="role">{{ user.role === 'ADMIN' ? 'администратор' : 'пользователь' }}</span>
+      <a routerLink="/profile" routerLinkActive="active" title="Профиль">
+        <app-icon name="profile" class="ico" />
+        <span class="label">
+          {{ user.username }}
+          <span class="role">{{ user.role === 'ADMIN' ? 'администратор' : 'пользователь' }}</span>
+        </span>
       </a>
-      <button type="button" class="btn btn-del" (click)="logout()">Выйти</button>
+      <button type="button" class="btn btn-del" title="Выйти" (click)="logout()">
+        <app-icon name="logout" class="ico" />
+        <span class="label">Выйти</span>
+      </button>
     } @else {
-      <a routerLink="/register" routerLinkActive="active">Регистрация</a>
+      <a routerLink="/register" routerLinkActive="active" title="Регистрация">
+        <app-icon name="register" class="ico" />
+        <span class="label">Регистрация</span>
+      </a>
       <a routerLink="/login" class="icon" title="Вход">
         <img src="assets/icons/login.png" alt="Вход" />
       </a>

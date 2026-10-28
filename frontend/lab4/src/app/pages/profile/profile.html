@@ -1,31 +1,65 @@
 <section class="narrow profile">
   <h1>Профиль</h1>
   @if (store.user(); as user) {
-    <app-user-card [user]="user" />
+    @if (!editing()) {
+      <app-user-card [user]="user" />
 
-    <div class="panel">
-      <h3>Права доступа</h3>
-      <ul class="rights">
-        <li>Просмотр списка студентов, поиск, фильтрация и сортировка</li>
-        <li>Просмотр подробной информации о студенте</li>
-        @if (store.isAdmin()) {
-          <li>Добавление, изменение и удаление студентов</li>
-          <li>Управление учетными записями пользователей</li>
+      <div class="panel">
+        <h3>Права доступа</h3>
+        <ul class="rights">
+          <li>Просмотр списка студентов, поиск, фильтрация и сортировка</li>
+          <li>Просмотр подробной информации о студенте</li>
+          @if (store.isAdmin()) {
+            <li>Добавление, изменение и удаление студентов</li>
+            <li>Управление учетными записями пользователей</li>
+          }
+        </ul>
+      </div>
+
+      <div class="actions">
+        <a routerLink="/students" class="btn">К списку студентов</a>
+        <button type="button" class="btn btn-edit" (click)="startEdit()">Редактировать профиль</button>
+        <button type="button" class="btn btn-save" [disabled]="reloadAction.busy()" (click)="reloadAction.run(undefined)">
+          {{ reloadAction.busy() ? 'Загрузка...' : 'Обновить данные' }}
+        </button>
+        <button type="button" class="btn btn-del" [disabled]="logoutAction.busy()" (click)="logoutAction.run(undefined)">
+          Выйти
+        </button>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" class="panel auth-form">
+        <h2>Редактирование профиля</h2>
+        <fieldset [disabled]="saveAction.busy()" class="fields">
+          <label>
+            Имя пользователя
+            <input type="text" formControlName="username" autocomplete="username" />
+            <small class="field-error">
+              {{ errorText(form.controls.username, 'От 3 до 32 символов: латинские буквы, цифры и _') || detail('username') }}
+            </small>
+          </label>
+          <label>
+            Почта
+            <input type="email" formControlName="email" autocomplete="email" />
+            <small class="field-error">
+              {{ errorText(form.controls.email, 'Некорректный адрес почты, пример: name@mail.ru') || detail('email') }}
+            </small>
+          </label>
+          <label>
+            Новый пароль
+            <input type="password" formControlName="password" placeholder="не менять" autocomplete="new-password" />
+            <small class="field-error">{{ errorText(form.controls.password) || detail('password') }}</small>
+          </label>
+        </fieldset>
+        @if (serverError()) {
+          <p class="form-error">{{ serverError() }}</p>
         }
-      </ul>
-      @if (tokenExpires()) {
-        <p class="muted">Access-токен действует до {{ tokenExpires() }}, затем обновляется автоматически</p>
-      }
-    </div>
-
-    <div class="actions">
-      <a routerLink="/students" class="btn">К списку студентов</a>
-      <button type="button" class="btn btn-edit" [disabled]="reloadAction.busy()" (click)="reloadAction.run(undefined)">
-        {{ reloadAction.busy() ? 'Загрузка...' : 'Обновить данные' }}
-      </button>
-      <button type="button" class="btn btn-del" [disabled]="logoutAction.busy()" (click)="logoutAction.run(undefined)">
-        Выйти
-      </button>
-    </div>
+        <div class="actions">
+          <button type="submit" class="btn btn-save" [disabled]="saveAction.busy()">
+            {{ saveAction.busy() ? 'Сохранение...' : 'Сохранить' }}
+          </button>
+          <button type="button" class="btn btn-del" [disabled]="saveAction.busy()" (click)="cancel()">Отмена</button>
+        </div>
+      </form>
+    }
   }
 </section>

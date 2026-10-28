@@ -1,15 +1,15 @@
 .hero {
-  max-width: 640px;
-  margin: 48px auto;
+  max-width: 40rem;
+  margin: 6vh auto;
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .actions {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 0.5rem;
 }

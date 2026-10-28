@@ -7,10 +7,23 @@ export interface User {
   role: Role;
 }
 
+export interface NewUser {
+  username: string;
+  email: string;
+  password: string;
+  role: Role;
+}
+
 export interface UserChanges {
   username?: string;
   email?: string;
   role?: Role;
+  password?: string;
+}
+
+export interface ProfileChanges {
+  username?: string;
+  email?: string;
   password?: string;
 }
 

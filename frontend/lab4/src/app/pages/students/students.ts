@@ -3,7 +3,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { KeyValuePipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, tap, withLatestFrom } from 'rxjs';
 import { FilterPanel } from '../../components/filter-panel/filter-panel';
 import { Loader } from '../../components/loader/loader';
 import { Pagination } from '../../components/pagination/pagination';
@@ -11,7 +11,7 @@ import { AuthStore } from '../../core/auth.store';
 import { fullMessage } from '../../core/errors';
 import { STUDENT_FIELDS, Student, StudentFilters, StudentPage } from '../../core/models';
 import { NoticeStore } from '../../core/notice.store';
-import { Action, LoadState, loadWith, searchText } from '../../core/rx';
+import { Action, LoadState, loadWith, poll, searchText } from '../../core/rx';
 import { StudentsApi } from '../../core/students.api';
 import { filtersToParams, PAGE_SIZES, paramsToQuery, sameQuery } from './student-query';
 
@@ -43,9 +43,17 @@ export class Students {
   protected readonly query = toSignal(this.query$, { requireSync: true });
 
   protected readonly state = toSignal(
-    combineLatest([this.query$, this.reload$]).pipe(
-      map(([query]) => query),
-      loadWith((query) => this.api.list(query)),
+    merge(
+      combineLatest([this.query$, this.reload$]).pipe(map(([query]) => ({ query, silent: false }))),
+      poll().pipe(
+        withLatestFrom(this.query$),
+        map(([, query]) => ({ query, silent: true })),
+      ),
+    ).pipe(
+      loadWith(
+        (request) => this.api.list(request.query),
+        (request) => request.silent,
+      ),
       tap((state) => this.fixPage(state)),
     ),
     { initialValue: { loading: true, data: null, error: null } as LoadState<StudentPage> },
