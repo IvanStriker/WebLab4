@@ -1,0 +1,8 @@
+<ul class="card">
+  @for (field of fields(); track field.key) {
+    <li>
+      <strong>{{ field.title }}</strong>
+      <span>{{ value(field.key) }}</span>
+    </li>
+  }
+</ul>

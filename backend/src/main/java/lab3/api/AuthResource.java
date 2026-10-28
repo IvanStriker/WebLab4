@@ -4,6 +4,7 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
@@ -75,6 +76,14 @@ public class AuthResource {
     @Operation(summary = "Текущий пользователь")
     public UserResponse me() {
         return authService.getUser(securityContext.getUserPrincipal().getName());
+    }
+
+    @DELETE
+    @Path("/me")
+    @SecurityRequirement(name = "bearer")
+    @Operation(summary = "Удалить свою учетную запись")
+    public void deleteMe() {
+        authService.deleteProfile(securityContext.getUserPrincipal().getName());
     }
 
     @PATCH

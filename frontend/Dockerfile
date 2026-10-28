@@ -8,5 +8,4 @@ RUN npx ng build --configuration production
 FROM nginx:stable-alpine
 COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=build /app/dist/lab4/browser /usr/share/nginx/html
-ENV BACKEND_URL=http://backend:8080
 EXPOSE 80

@@ -1,24 +1,16 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Student, StudentChanges, StudentPage, StudentQuery } from './models';
+import { ListQuery, Page, Student, StudentChanges } from './models';
+import { listParams } from './list-params';
 
 @Injectable({ providedIn: 'root' })
 export class StudentsApi {
   private readonly http = inject(HttpClient);
   private readonly url = '/api/requests';
 
-  list(query: StudentQuery): Observable<StudentPage> {
-    let params = new HttpParams().set('page', query.page).set('size', query.size).set('sort', query.sort);
-    if (query.search) {
-      params = params.set('search', query.search);
-    }
-    for (const [key, values] of Object.entries(query.filters)) {
-      for (const value of values) {
-        params = params.append(key, value);
-      }
-    }
-    return this.http.get<StudentPage>(this.url, { params });
+  list(query: ListQuery): Observable<Page<Student>> {
+    return this.http.get<Page<Student>>(this.url, { params: listParams(query) });
   }
 
   get(id: number): Observable<Student> {

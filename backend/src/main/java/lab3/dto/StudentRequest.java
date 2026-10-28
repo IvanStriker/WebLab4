@@ -13,7 +13,7 @@ public record StudentRequest(
 
         @NotNull(message = "Обязательное поле")
         @Pattern(regexp = "^[А-Яа-яЁёA-Za-z-]+(\\s+[А-Яа-яЁёA-Za-z-]+)+$",
-                message = "Минимум два слова из букв и дефисов, например «Анна Смирнова»")
+                message = "Минимум два слова из букв и дефисов, например \"Анна Смирнова\"")
         String name,
 
         @NotNull(message = "Обязательное поле")

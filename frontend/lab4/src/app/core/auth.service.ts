@@ -39,6 +39,16 @@ export class AuthService {
     );
   }
 
+  deleteMe(): Observable<void> {
+    return this.http.delete<void>('/api/auth/me');
+  }
+
+  accountDeleted(): void {
+    this.store.clear();
+    this.notices.success('Учетная запись удалена, вы вышли из системы');
+    this.router.navigate(['/login']);
+  }
+
   restoreSession(): Observable<unknown> {
     if (!this.store.hasTokens()) {
       return of(null);

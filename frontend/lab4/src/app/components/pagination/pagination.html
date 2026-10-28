@@ -1,6 +1,6 @@
 @if (totalPages() > 1) {
   <div class="pagination">
-    <button type="button" class="btn" [disabled]="disabled() || page() <= 1" (click)="pageChange.emit(1)">«</button>
+    <button type="button" class="btn" [disabled]="disabled() || page() <= 1" (click)="pageChange.emit(1)">В начало</button>
     <button type="button" class="btn" [disabled]="disabled() || page() <= 1" (click)="pageChange.emit(page() - 1)">
       Назад
     </button>
@@ -19,7 +19,7 @@
       [disabled]="disabled() || page() >= totalPages()"
       (click)="pageChange.emit(totalPages())"
     >
-      »
+      В конец
     </button>
   </div>
 }

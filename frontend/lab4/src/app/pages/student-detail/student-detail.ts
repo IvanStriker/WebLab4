@@ -1,19 +1,19 @@
-import { Component, DestroyRef, inject, input, signal } from '@angular/core';
+import { Component, DestroyRef, inject, input } from '@angular/core';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
-import { map, merge, of, switchMap } from 'rxjs';
+import { ConfirmButton } from '../../components/confirm-button/confirm-button';
+import { DetailCard } from '../../components/detail-card/detail-card';
 import { Loader } from '../../components/loader/loader';
-import { StudentCard } from '../../components/student-card/student-card';
 import { AuthStore } from '../../core/auth.store';
 import { fullMessage } from '../../core/errors';
-import { Student } from '../../core/models';
+import { STUDENT_FIELDS, Student } from '../../core/models';
 import { NoticeStore } from '../../core/notice.store';
-import { Action, LoadState, loadWith, poll } from '../../core/rx';
+import { Action, LoadState, loadAndPoll } from '../../core/rx';
 import { StudentsApi } from '../../core/students.api';
 import { loadStudent } from '../student-id';
 
 @Component({
-  imports: [RouterLink, StudentCard, Loader],
+  imports: [RouterLink, DetailCard, ConfirmButton, Loader],
   selector: 'app-student-detail',
   styleUrl: './student-detail.scss',
   templateUrl: './student-detail.html',
@@ -25,17 +25,10 @@ export class StudentDetail {
   private readonly router = inject(Router);
   private readonly notices = inject(NoticeStore);
   protected readonly store = inject(AuthStore);
-
-  protected readonly confirm = signal(false);
+  protected readonly fields = STUDENT_FIELDS;
 
   protected readonly state = toSignal(
-    toObservable(this.id).pipe(
-      switchMap((id) => merge(of({ id, silent: false }), poll().pipe(map(() => ({ id, silent: true }))))),
-      loadWith(
-        (request) => loadStudent(this.api, request.id),
-        (request) => request.silent,
-      ),
-    ),
+    toObservable(this.id).pipe(loadAndPoll((id) => loadStudent(this.api, id))),
     { initialValue: { loading: true, data: null, error: null } as LoadState<Student> },
   );
 
@@ -44,21 +37,12 @@ export class StudentDetail {
   constructor() {
     this.deleteAction.results$.pipe(takeUntilDestroyed(inject(DestroyRef))).subscribe((result) => {
       if (result.error) {
-        this.confirm.set(false);
         this.notices.error(fullMessage(result.error));
         return;
       }
       this.notices.success(`Студент ${this.id()} удалён`);
       this.router.navigate(['/students']);
     });
-  }
-
-  remove(student: Student): void {
-    if (!this.confirm()) {
-      this.confirm.set(true);
-      return;
-    }
-    this.deleteAction.run(student);
   }
 
   exportJson(student: Student): void {

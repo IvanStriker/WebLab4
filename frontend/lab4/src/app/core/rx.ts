@@ -8,6 +8,7 @@ import {
   finalize,
   fromEvent,
   map,
+  merge,
   Observable,
   of,
   OperatorFunction,
@@ -77,6 +78,17 @@ export function loadWith<Q, T>(
         }
         return next.state;
       }, start),
+    );
+}
+
+export function loadAndPoll<K, T>(request: (key: K) => Observable<T>): OperatorFunction<K, LoadState<T>> {
+  return (source) =>
+    source.pipe(
+      switchMap((key) => merge(of({ key, silent: false }), poll().pipe(map(() => ({ key, silent: true }))))),
+      loadWith(
+        (step) => request(step.key),
+        (step) => step.silent,
+      ),
     );
 }
 

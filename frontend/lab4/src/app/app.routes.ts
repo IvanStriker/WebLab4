@@ -8,7 +8,8 @@ import { Register } from './pages/register/register';
 import { StudentDetail } from './pages/student-detail/student-detail';
 import { StudentEdit } from './pages/student-edit/student-edit';
 import { Students } from './pages/students/students';
-import { UserNew } from './pages/user-new/user-new';
+import { UserDetail } from './pages/user-detail/user-detail';
+import { UserEdit } from './pages/user-edit/user-edit';
 import { Users } from './pages/users/users';
 
 export const routes: Routes = [
@@ -21,6 +22,8 @@ export const routes: Routes = [
   { path: 'students/:id', component: StudentDetail, canActivate: [authGuard], title: 'Студент' },
   { path: 'students/:id/edit', component: StudentEdit, canActivate: [adminGuard], title: 'Редактирование' },
   { path: 'users', component: Users, canActivate: [adminGuard], title: 'Пользователи' },
-  { path: 'users/new', component: UserNew, canActivate: [adminGuard], title: 'Новый пользователь' },
+  { path: 'users/new', component: UserEdit, canActivate: [adminGuard], title: 'Новый пользователь' },
+  { path: 'users/:username', component: UserDetail, canActivate: [adminGuard], title: 'Пользователь' },
+  { path: 'users/:username/edit', component: UserEdit, canActivate: [adminGuard], title: 'Редактирование' },
   { path: '**', component: NotFound, title: 'Страница не найдена' },
 ];

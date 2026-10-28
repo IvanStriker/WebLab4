@@ -106,7 +106,7 @@ public class StudentService {
         LocalDate today = LocalDate.now();
         if (date != null && (date.isBefore(today) || date.isAfter(today.plusMonths(6)))) {
             throw new ApiException(422, "Данные не прошли проверку", Map.of("moveinDate",
-                    "Дата заселения — не раньше сегодняшней и не позже чем через 6 месяцев"));
+                    "Дата заселения: не раньше сегодняшней и не позже чем через 6 месяцев"));
         }
     }
 

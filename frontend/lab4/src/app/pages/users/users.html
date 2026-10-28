@@ -1,29 +1,62 @@
 <h1>Учетные записи</h1>
 
-<div class="toolbar">
+<app-list-toolbar
+  placeholder="Поиск по имени или почте..."
+  [search]="list.query().search"
+  [filterCount]="list.filterCount()"
+  [filtersOpen]="showFilters()"
+  [size]="list.query().size"
+  (searchChange)="list.search($event)"
+  (toggleFilters)="showFilters.set(!showFilters())"
+  (sizeChange)="list.changeSize($event)"
+>
   <a routerLink="/users/new" class="btn btn-save">Добавить пользователя</a>
-</div>
+</app-list-toolbar>
 
-@if (state().loading) {
+@if (showFilters()) {
+  <app-filter-panel [fields]="filterFields" [filters]="list.query().filters" (apply)="list.applyFilters($event)" />
+}
+
+@if (list.state().error; as error) {
+  <div class="panel error-box">
+    <p>{{ error.message }}</p>
+    @for (detail of error.details | keyvalue; track detail.key) {
+      <p class="muted">{{ detail.key }}: {{ detail.value }}</p>
+    }
+    <div class="actions">
+      <button type="button" class="btn" (click)="list.reload()">Повторить</button>
+      @if (error.status === 400) {
+        <button type="button" class="btn btn-del" (click)="list.resetAll()">Сбросить параметры</button>
+      }
+    </div>
+  </div>
+}
+
+@if (list.state().data; as page) {
+  <p class="summary">Найдено: {{ page.totalItems }}</p>
+  <app-data-table
+    [columns]="columns"
+    [rows]="page.items"
+    [sort]="list.query().sort"
+    [loading]="list.state().loading"
+    [actions]="actions"
+    emptyText="Пользователи не найдены"
+    (sortChange)="list.sortBy($event)"
+  />
+  <app-pagination
+    [page]="page.page"
+    [totalPages]="page.totalPages"
+    [disabled]="list.state().loading"
+    (pageChange)="list.changePage($event)"
+  />
+}
+
+@if (list.state().loading) {
   <app-loader />
 }
 
-@if (state().error; as error) {
-  <div class="panel">
-    <p>{{ error.message }}</p>
-    <button type="button" class="btn" (click)="reload()">Повторить</button>
-  </div>
-}
-
-@if (state().data; as users) {
-  <div class="grid">
-    @for (user of users; track user.id) {
-      <app-user-card
-        [user]="user"
-        [editable]="true"
-        [busy]="savingId() === user.id"
-        (save)="save(user, $event)"
-      />
-    }
-  </div>
-}
+<ng-template #actions let-row>
+  <a [routerLink]="['/users', asUser(row).username]" class="btn info" title="Подробнее">i</a>
+  <a [routerLink]="['/users', asUser(row).username, 'edit']" class="btn btn-edit">Редактировать</a>
+  <app-confirm-button [busy]="deleteAction.busy()" (confirmed)="deleteAction.run(asUser(row))" />
+</ng-template>

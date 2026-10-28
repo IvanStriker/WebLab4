@@ -49,7 +49,7 @@ public class StudentResource {
     @GET
     @Operation(summary = "Список студентов",
             description = "Фильтры id, name, group, dormitory, room, moveinDate, country, notes "
-                    + "(повтор параметра — ИЛИ, разные параметры — И), search, sort (-name — по убыванию), page, size")
+                    + "(повтор параметра: ИЛИ, разные параметры: И), search, sort (-name: по убыванию), page, size")
     public StudentPage list() {
         return studentService.find(StudentQueryParser.parse(uriInfo.getQueryParameters()));
     }

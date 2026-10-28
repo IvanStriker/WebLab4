@@ -5,8 +5,11 @@ import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import lab3.dto.UserCreateRequest;
+import lab3.dto.UserPage;
+import lab3.dto.UserQuery;
 import lab3.dto.UserResponse;
 import lab3.dto.UserUpdateRequest;
+import lab3.model.Role;
 import lab3.model.User;
 import lab3.repository.RefreshTokenRepository;
 import lab3.repository.UserRepository;
@@ -32,8 +35,20 @@ public class UserService {
     @Inject
     private RequestValidator validator;
 
-    public List<UserResponse> findAll() {
-        return users.findAll().stream().map(UserResponse::from).toList();
+    public UserPage find(UserQuery query) {
+        List<UserResponse> items = users.find(query).stream().map(UserResponse::from).toList();
+        return UserPage.of(items, query.page(), query.size(), users.count(query));
+    }
+
+    @Transactional
+    public void delete(long id, String currentUsername) {
+        User user = users.findById(id)
+                .orElseThrow(() -> new ApiException(404, "Пользователь с id " + id + " не найден"));
+        if (user.getRole() == Role.ADMIN && users.countByRole(Role.ADMIN) == 1) {
+            throw new ApiException(422, "Нельзя удалить последнего администратора");
+        }
+        users.delete(user);
+        log.info("Пользователь {} удалил учетную запись {} (id {})", currentUsername, user.getUsername(), id);
     }
 
     @Transactional

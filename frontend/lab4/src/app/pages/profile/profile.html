@@ -2,7 +2,9 @@
   <h1>Профиль</h1>
   @if (store.user(); as user) {
     @if (!editing()) {
-      <app-user-card [user]="user" />
+      <div class="panel">
+        <app-detail-card [fields]="fields" [item]="user" />
+      </div>
 
       <div class="panel">
         <h3>Права доступа</h3>
@@ -19,47 +21,29 @@
       <div class="actions">
         <a routerLink="/students" class="btn">К списку студентов</a>
         <button type="button" class="btn btn-edit" (click)="startEdit()">Редактировать профиль</button>
-        <button type="button" class="btn btn-save" [disabled]="reloadAction.busy()" (click)="reloadAction.run(undefined)">
-          {{ reloadAction.busy() ? 'Загрузка...' : 'Обновить данные' }}
-        </button>
         <button type="button" class="btn btn-del" [disabled]="logoutAction.busy()" (click)="logoutAction.run(undefined)">
           Выйти
         </button>
+        <app-confirm-button
+          text="Удалить аккаунт"
+          confirmText="Точно удалить аккаунт?"
+          [busy]="deleteAction.busy()"
+          (confirmed)="deleteAction.run(undefined)"
+        />
       </div>
     } @else {
-      <form [formGroup]="form" (ngSubmit)="submit()" class="panel auth-form">
-        <h2>Редактирование профиля</h2>
-        <fieldset [disabled]="saveAction.busy()" class="fields">
-          <label>
-            Имя пользователя
-            <input type="text" formControlName="username" autocomplete="username" />
-            <small class="field-error">
-              {{ errorText(form.controls.username, 'От 3 до 32 символов: латинские буквы, цифры и _') || detail('username') }}
-            </small>
-          </label>
-          <label>
-            Почта
-            <input type="email" formControlName="email" autocomplete="email" />
-            <small class="field-error">
-              {{ errorText(form.controls.email, 'Некорректный адрес почты, пример: name@mail.ru') || detail('email') }}
-            </small>
-          </label>
-          <label>
-            Новый пароль
-            <input type="password" formControlName="password" placeholder="не менять" autocomplete="new-password" />
-            <small class="field-error">{{ errorText(form.controls.password) || detail('password') }}</small>
-          </label>
-        </fieldset>
-        @if (serverError()) {
-          <p class="form-error">{{ serverError() }}</p>
-        }
-        <div class="actions">
-          <button type="submit" class="btn btn-save" [disabled]="saveAction.busy()">
-            {{ saveAction.busy() ? 'Сохранение...' : 'Сохранить' }}
-          </button>
-          <button type="button" class="btn btn-del" [disabled]="saveAction.busy()" (click)="cancel()">Отмена</button>
-        </div>
-      </form>
+      <h2>Редактирование профиля</h2>
+      @if (serverError()) {
+        <p class="form-error panel">{{ serverError() }}</p>
+      }
+      <app-user-form
+        [user]="user"
+        [showRole]="false"
+        [busy]="saveAction.busy()"
+        [serverErrors]="serverDetails()"
+        (submitted)="save($event)"
+        (cancelled)="editing.set(false)"
+      />
     }
   }
 </section>

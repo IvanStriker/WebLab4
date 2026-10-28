@@ -1,5 +1,5 @@
 <section class="narrow detail">
-  <a routerLink="/students" class="back">← К списку студентов</a>
+  <a routerLink="/students" class="back">К списку студентов</a>
 
   @if (state().loading) {
     <app-loader />
@@ -19,19 +19,10 @@
         <button type="button" class="btn" (click)="exportJson(student)">Выгрузить в JSON</button>
         @if (store.isAdmin()) {
           <a [routerLink]="['/students', student.id, 'edit']" class="btn btn-edit">Редактировать</a>
-          <button
-            type="button"
-            class="btn btn-del"
-            [class.confirm]="confirm()"
-            [disabled]="deleteAction.busy()"
-            (click)="remove(student)"
-            (blur)="confirm.set(false)"
-          >
-            {{ deleteAction.busy() ? 'Удаление...' : confirm() ? 'Точно удалить?' : 'Удалить' }}
-          </button>
+          <app-confirm-button [busy]="deleteAction.busy()" (confirmed)="deleteAction.run(student)" />
         }
       </div>
-      <app-student-card [student]="student" />
+      <app-detail-card [fields]="fields" [item]="student" />
     </div>
   }
 </section>

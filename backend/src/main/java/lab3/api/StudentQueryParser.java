@@ -55,7 +55,7 @@ public class StudentQueryParser {
                         descending = value.startsWith("-");
                         sort = descending ? value.substring(1) : value;
                         if (!FIELDS.contains(sort)) {
-                            errors.put("sort", "Нельзя сортировать по полю «" + sort + "»");
+                            errors.put("sort", "Нельзя сортировать по полю \"" + sort + "\"");
                         }
                     }
                     case "page" -> page = Integer.parseInt(value);
@@ -77,7 +77,7 @@ public class StudentQueryParser {
             errors.put("page", "Номер страницы от 1 до " + MAX_PAGE);
         }
         if (size < 1 || size > 100) {
-            errors.put("size", "Размер страницы — от 1 до 100");
+            errors.put("size", "Размер страницы от 1 до 100");
         }
         if (!errors.isEmpty()) {
             throw new ApiException(400, "Некорректные параметры запроса", errors);

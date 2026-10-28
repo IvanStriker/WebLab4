@@ -139,6 +139,13 @@ public class AuthService {
         return createTokens(user);
     }
 
+    @Transactional
+    public void deleteProfile(String username) {
+        User user = users.findByUsername(username)
+                .orElseThrow(() -> new ApiException(404, "Пользователь не найден"));
+        userService.delete(user.getId(), username);
+    }
+
     private User createUser(String username, String email, String password, Role role) {
         String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
         User user = new User(username, email, hash, role);

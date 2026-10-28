@@ -23,11 +23,11 @@ public class JwtService {
     private String secret;
 
     @Inject
-    @ConfigProperty(name = "JWT_ACCESS_TTL_MINUTES", defaultValue = "15")
+    @ConfigProperty(name = "JWT_ACCESS_TTL_MINUTES")
     private long accessTtlMinutes;
 
     @Inject
-    @ConfigProperty(name = "JWT_REFRESH_TTL_DAYS", defaultValue = "7")
+    @ConfigProperty(name = "JWT_REFRESH_TTL_DAYS")
     private long refreshTtlDays;
 
     private Algorithm algorithm;

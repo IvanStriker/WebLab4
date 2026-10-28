@@ -1,0 +1,25 @@
+<section class="narrow detail">
+  <a routerLink="/users" class="back">К учетным записям</a>
+
+  @if (state().loading) {
+    <app-loader />
+  }
+
+  @if (state().error; as error) {
+    <div class="panel">
+      <h2>{{ error.status === 404 ? 'Пользователь не найден' : 'Ошибка' }}</h2>
+      <p>{{ error.message }}</p>
+    </div>
+  }
+
+  @if (state().data; as user) {
+    <div class="panel">
+      <div class="header">
+        <h2>Учетная запись</h2>
+        <a [routerLink]="['/users', user.username, 'edit']" class="btn btn-edit">Редактировать</a>
+        <app-confirm-button [busy]="deleteAction.busy()" (confirmed)="deleteAction.run(user)" />
+      </div>
+      <app-detail-card [fields]="fields" [item]="user" />
+    </div>
+  }
+</section>

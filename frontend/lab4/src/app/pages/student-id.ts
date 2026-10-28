@@ -7,7 +7,7 @@ export function loadStudent(api: StudentsApi, id: string): Observable<Student> {
   const number = Number(id);
   if (!Number.isInteger(number) || number <= 0) {
     return throwError(
-      () => new HttpErrorResponse({ status: 404, error: { error: `Некорректный номер ИСУ «${id}»` } }),
+      () => new HttpErrorResponse({ status: 404, error: { error: `Некорректный номер ИСУ: ${id}` } }),
     );
   }
   return api.get(number);

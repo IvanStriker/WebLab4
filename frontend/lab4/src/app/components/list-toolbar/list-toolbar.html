@@ -1,0 +1,18 @@
+<div class="toolbar">
+  <input type="search" class="search" [formControl]="searchControl" [placeholder]="placeholder()" aria-label="Поиск" />
+  <button type="button" class="btn" (click)="toggleFilters.emit()">
+    {{ filtersOpen() ? 'Скрыть фильтры' : 'Фильтры' }}
+    @if (filterCount() > 0) {
+      <span class="count">{{ filterCount() }}</span>
+    }
+  </button>
+  <ng-content />
+  <label class="size">
+    На странице
+    <select (change)="changeSize($any($event.target).value)">
+      @for (option of sizes; track option) {
+        <option [value]="option" [selected]="option === size()">{{ option }}</option>
+      }
+    </select>
+  </label>
+</div>

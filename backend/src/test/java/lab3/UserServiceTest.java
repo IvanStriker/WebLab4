@@ -94,6 +94,39 @@ class UserServiceTest {
         assertEquals(404, error.getStatus());
     }
 
+    @Test
+    void userCanDeleteOwnAccount() {
+        User user = new User("anna", "anna@mail.ru", "hash", Role.USER);
+        when(users.findById(2L)).thenReturn(Optional.of(user));
+
+        service.delete(2L, "anna");
+
+        verify(users).delete(user);
+    }
+
+    @Test
+    void lastAdminCannotBeDeleted() {
+        User admin = new User("admin", "admin@mail.ru", "hash", Role.ADMIN);
+        when(users.findById(1L)).thenReturn(Optional.of(admin));
+        when(users.countByRole(Role.ADMIN)).thenReturn(1L);
+
+        ApiException error = assertThrows(ApiException.class, () -> service.delete(1L, "admin"));
+
+        assertEquals(422, error.getStatus());
+        verify(users, never()).delete(admin);
+    }
+
+    @Test
+    void adminCanDeleteSelfWhenOtherAdminsExist() {
+        User admin = new User("admin", "admin@mail.ru", "hash", Role.ADMIN);
+        when(users.findById(1L)).thenReturn(Optional.of(admin));
+        when(users.countByRole(Role.ADMIN)).thenReturn(2L);
+
+        service.delete(1L, "admin");
+
+        verify(users).delete(admin);
+    }
+
     private static User user(long id, String username, Role role) {
         User user = spy(new User(username, username + "@mail.ru", "hash", role));
         doReturn(id).when(user).getId();

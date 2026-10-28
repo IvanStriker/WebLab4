@@ -1,9 +1,7 @@
-import { Component, input, OnChanges, output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { COUNTRIES, StudentFilters } from '../../core/models';
+import { Component, input, OnChanges, output, SimpleChanges } from '@angular/core';
+import { FormControl, FormGroup, FormRecord, ReactiveFormsModule } from '@angular/forms';
+import { FilterField, Filters } from '../../core/models';
 import { errorText, numberList, splitList } from '../../core/validators';
-
-const TEXT_FIELDS = ['id', 'name', 'group', 'dormitory', 'room', 'moveinDate', 'notes'];
 
 @Component({
   imports: [ReactiveFormsModule],
@@ -12,44 +10,54 @@ const TEXT_FIELDS = ['id', 'name', 'group', 'dormitory', 'room', 'moveinDate', '
   templateUrl: './filter-panel.html',
 })
 export class FilterPanel implements OnChanges {
-  readonly filters = input<StudentFilters>({});
-  readonly apply = output<StudentFilters>();
+  readonly fields = input.required<FilterField[]>();
+  readonly filters = input<Filters>({});
+  readonly apply = output<Filters>();
 
-  protected readonly countries = COUNTRIES;
   protected readonly errorText = errorText;
+  protected form = new FormRecord<FormControl<string> | FormGroup>({});
 
-  protected readonly form = new FormGroup({
-    id: new FormControl('', { nonNullable: true, validators: numberList }),
-    name: new FormControl('', { nonNullable: true }),
-    group: new FormControl('', { nonNullable: true }),
-    dormitory: new FormControl('', { nonNullable: true, validators: numberList }),
-    room: new FormControl('', { nonNullable: true, validators: numberList }),
-    moveinDate: new FormControl('', { nonNullable: true }),
-    notes: new FormControl('', { nonNullable: true }),
-    country: new FormGroup({
-      Россия: new FormControl(false, { nonNullable: true }),
-      Беларусь: new FormControl(false, { nonNullable: true }),
-      Китай: new FormControl(false, { nonNullable: true }),
-    }),
-  });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['fields']) {
+      this.buildForm();
+    }
+    this.fillForm();
+  }
 
-  ngOnChanges(): void {
+  protected control(key: string): FormControl<string> {
+    return this.form.get(key) as FormControl<string>;
+  }
+
+  private buildForm(): void {
+    this.form = new FormRecord<FormControl<string> | FormGroup>({});
+    for (const field of this.fields()) {
+      if (field.type === 'checkboxes') {
+        const group = new FormGroup<Record<string, FormControl<boolean>>>({});
+        for (const option of field.options ?? []) {
+          group.addControl(option, new FormControl(false, { nonNullable: true }));
+        }
+        this.form.addControl(field.key, group);
+      } else {
+        const validators = field.type === 'numbers' ? numberList : null;
+        this.form.addControl(field.key, new FormControl('', { nonNullable: true, validators }));
+      }
+    }
+  }
+
+  private fillForm(): void {
     const filters = this.filters();
-    const countries = filters['country'] ?? [];
-    this.form.reset({
-      id: (filters['id'] ?? []).join(', '),
-      name: (filters['name'] ?? []).join(', '),
-      group: (filters['group'] ?? []).join(', '),
-      dormitory: (filters['dormitory'] ?? []).join(', '),
-      room: (filters['room'] ?? []).join(', '),
-      moveinDate: (filters['moveinDate'] ?? [])[0] ?? '',
-      notes: (filters['notes'] ?? []).join(', '),
-      country: {
-        Россия: countries.includes('Россия'),
-        Беларусь: countries.includes('Беларусь'),
-        Китай: countries.includes('Китай'),
-      },
-    });
+    for (const field of this.fields()) {
+      const values = filters[field.key] ?? [];
+      if (field.type === 'checkboxes') {
+        const group = this.form.get(field.key) as FormGroup;
+        for (const option of field.options ?? []) {
+          group.get(option)?.setValue(values.includes(option));
+        }
+      } else {
+        this.control(field.key).setValue(values.join(', '));
+      }
+    }
+    this.form.markAsUntouched();
   }
 
   submit(): void {
@@ -57,20 +65,20 @@ export class FilterPanel implements OnChanges {
       this.form.markAllAsTouched();
       return;
     }
-    const value = this.form.getRawValue();
-    const result: StudentFilters = {};
-    for (const field of TEXT_FIELDS) {
-      const text = value[field as keyof typeof value] as string;
-      const parts = field === 'notes' || field === 'moveinDate' ? [text.trim()].filter(Boolean) : splitList(text);
-      if (parts.length > 0) {
-        result[field] = parts;
+    const result: Filters = {};
+    for (const field of this.fields()) {
+      let values: string[];
+      if (field.type === 'checkboxes') {
+        const group = this.form.get(field.key) as FormGroup;
+        values = (field.options ?? []).filter((option) => group.get(option)?.value);
+      } else if (field.type === 'list' || field.type === 'numbers') {
+        values = splitList(this.control(field.key).value);
+      } else {
+        values = [this.control(field.key).value.trim()].filter(Boolean);
       }
-    }
-    const countries = Object.entries(value.country)
-      .filter(([, checked]) => checked)
-      .map(([country]) => country);
-    if (countries.length > 0) {
-      result['country'] = countries;
+      if (values.length > 0) {
+        result[field.key] = values;
+      }
     }
     this.apply.emit(result);
   }

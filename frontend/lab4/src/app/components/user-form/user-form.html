@@ -1,0 +1,46 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="panel user-form">
+  <fieldset [disabled]="busy()">
+    <label>
+      Имя пользователя
+      <input type="text" formControlName="username" autocomplete="off" placeholder="ivan_petrov" />
+      <small class="field-error">
+        {{ errorText(form.controls.username, 'От 3 до 32 символов: латинские буквы, цифры и _') || serverError('username') }}
+      </small>
+    </label>
+    <label>
+      Почта
+      <input type="email" formControlName="email" autocomplete="off" placeholder="name@mail.ru" />
+      <small class="field-error">
+        {{ errorText(form.controls.email, 'Некорректный адрес почты, пример: name@mail.ru') || serverError('email') }}
+      </small>
+    </label>
+    @if (showRole()) {
+      <label>
+        Роль
+        <select formControlName="role">
+          @for (role of roles; track role) {
+            <option [value]="role">{{ role }}</option>
+          }
+        </select>
+        <small class="field-error">{{ serverError('role') }}</small>
+      </label>
+    }
+    <label>
+      {{ user() ? 'Новый пароль' : 'Пароль' }}
+      <input
+        type="password"
+        formControlName="password"
+        autocomplete="new-password"
+        [placeholder]="user() ? 'не менять' : ''"
+      />
+      <small class="field-error">{{ errorText(form.controls.password) || serverError('password') }}</small>
+    </label>
+  </fieldset>
+
+  <div class="actions">
+    <button type="submit" class="btn btn-save" [disabled]="busy()">
+      {{ busy() ? 'Сохранение...' : 'Сохранить' }}
+    </button>
+    <button type="button" class="btn btn-del" [disabled]="busy()" (click)="cancelled.emit()">Отмена</button>
+  </div>
+</form>

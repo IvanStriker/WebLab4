@@ -3,9 +3,9 @@ services:
     image: postgres:17
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DB_NAME:-students}
-      POSTGRES_USER: ${DB_USER:-students}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-students}
+      POSTGRES_DB: ${DB_NAME:?Задайте DB_NAME в .env}
+      POSTGRES_USER: ${DB_USER:?Задайте DB_USER в .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Задайте DB_PASSWORD в .env}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -21,15 +21,15 @@ services:
       db:
         condition: service_healthy
     environment:
-      DB_URL: jdbc:postgresql://db:5432/${DB_NAME:-students}?stringtype=unspecified
-      DB_USER: ${DB_USER:-students}
-      DB_PASSWORD: ${DB_PASSWORD:-students}
-      JWT_SECRET: ${JWT_SECRET:-docker-dev-secret-0123456789abcdefghijklmnop}
-      JWT_ACCESS_TTL_MINUTES: ${JWT_ACCESS_TTL_MINUTES:-15}
-      JWT_REFRESH_TTL_DAYS: ${JWT_REFRESH_TTL_DAYS:-7}
-      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me-please}
+      DB_URL: jdbc:postgresql://db:5432/${DB_NAME:?Задайте DB_NAME в .env}?stringtype=unspecified
+      DB_USER: ${DB_USER:?Задайте DB_USER в .env}
+      DB_PASSWORD: ${DB_PASSWORD:?Задайте DB_PASSWORD в .env}
+      JWT_SECRET: ${JWT_SECRET:?Задайте JWT_SECRET в .env}
+      JWT_ACCESS_TTL_MINUTES: ${JWT_ACCESS_TTL_MINUTES:?Задайте JWT_ACCESS_TTL_MINUTES в .env}
+      JWT_REFRESH_TTL_DAYS: ${JWT_REFRESH_TTL_DAYS:?Задайте JWT_REFRESH_TTL_DAYS в .env}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:?Задайте ADMIN_USERNAME в .env}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?Задайте ADMIN_EMAIL в .env}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Задайте ADMIN_PASSWORD в .env}
 
   frontend:
     build: ./frontend
@@ -37,9 +37,9 @@ services:
     depends_on:
       - backend
     environment:
-      BACKEND_URL: http://backend:8080
+      BACKEND_URL: ${BACKEND_URL:?Задайте BACKEND_URL в .env}
     ports:
-      - "${APP_PORT:-8080}:80"
+      - "${APP_PORT:?Задайте APP_PORT в .env}:80"
 
 volumes:
   pgdata:

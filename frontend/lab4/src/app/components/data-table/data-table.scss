@@ -1,0 +1,45 @@
+.table-wrap {
+  overflow-x: auto;
+  transition: opacity 0.2s;
+}
+
+.table-wrap.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable:hover {
+  color: var(--color-text);
+}
+
+.mark {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.mark.asc,
+.mark.desc {
+  width: 0;
+  height: 0;
+  margin-left: 0.25rem;
+  border-left: 0.3rem solid transparent;
+  border-right: 0.3rem solid transparent;
+}
+
+.mark.asc {
+  border-bottom: 0.45rem solid currentColor;
+}
+
+.mark.desc {
+  border-top: 0.45rem solid currentColor;
+}
+
+.empty {
+  color: var(--color-muted);
+  font-style: italic;
+}

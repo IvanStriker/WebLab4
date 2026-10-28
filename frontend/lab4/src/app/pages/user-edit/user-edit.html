@@ -1,0 +1,24 @@
+<section class="narrow edit">
+  <a routerLink="/users" class="back">К учетным записям</a>
+  <h1>{{ isNew() ? 'Новый пользователь' : 'Редактирование: ' + username() }}</h1>
+
+  @if (state().loading) {
+    <app-loader />
+  } @else if (state().error; as error) {
+    <div class="panel">
+      <h2>{{ error.status === 404 ? 'Пользователь не найден' : 'Ошибка' }}</h2>
+      <p>{{ error.message }}</p>
+    </div>
+  } @else {
+    @if (formError()) {
+      <p class="form-error panel">{{ formError() }}</p>
+    }
+    <app-user-form
+      [user]="state().data"
+      [busy]="saveAction.busy()"
+      [serverErrors]="fieldErrors()"
+      (submitted)="save($event)"
+      (cancelled)="back()"
+    />
+  }
+</section>
